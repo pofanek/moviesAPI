@@ -1,0 +1,1 @@
+# Project created for tailwind, typescript and API learning purposes.
