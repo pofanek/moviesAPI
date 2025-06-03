@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npx ts-node ./src/server/server.ts",
     "build": "tsc",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "tail": "npx tailwindcss -i ./src/client/input.css -o ./src/client/output.css --watch"
   },
   "keywords": [],
   "author": "",
