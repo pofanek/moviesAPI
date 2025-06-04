@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "": "node ./dist/server/server.js",
+    "server": "nodemon ./src/server/server.ts",
     "watch": "tsc --watch",
     "tail": "npx tailwindcss -i ./src/client/input.css -o ./src/client/output.css --watch"
   },
@@ -13,13 +14,18 @@
   "description": "",
   "dependencies": {
     "@tailwindcss/cli": "^4.1.8",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
+    "multer": "^2.0.1",
     "tailwindcss": "^4.1.8"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.18",
     "@types/express": "^5.0.1",
+    "@types/multer": "^1.4.12",
     "@types/node": "^22.13.14",
+    "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   }
 }
