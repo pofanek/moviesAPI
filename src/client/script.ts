@@ -3,6 +3,10 @@ const form = document.querySelector<HTMLFormElement>('#dodawanie')
 //? button?.przykladowaMetoda() JEZELI BUTTON ISTNIEJE (nie jest NULL), WYWOŁA METODE.
 form?.addEventListener('submit', (e) => {
     e.preventDefault()
+    if(!document.querySelector<HTMLInputElement>("#uploadImage")?.files?.length) {
+        alert("CHOOSE AN IMAGE FILE.")
+        return
+    }
     //? uzywam formData bo korzystam z plikow.
     const formData = new FormData(form)
     console.log(formData);
@@ -11,7 +15,7 @@ form?.addEventListener('submit', (e) => {
     })
     fetch('http://localhost:4747/movies/add', {
         method: "POST",
-        //? content-type ustawia sie sam pod formData (klucz - wartosc)
+        //? content-type ustawia sie sam pod formData
         body: formData
     })
     //? szyk ze najpierw definiuje sie repsonse a potem wyswietla dane jest odgórny, jakbym usunal czesc z response to by w data pojawil sie response
@@ -21,6 +25,9 @@ form?.addEventListener('submit', (e) => {
     })
     .then((data: string) => { //? przyslane z serwera
         console.log(data)
+    })
+    .then(() => {
+        form.reset()
     })
     .catch((err: Error) => console.log(err))
 })
