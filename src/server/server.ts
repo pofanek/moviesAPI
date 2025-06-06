@@ -3,7 +3,7 @@ import cors from "cors"
 import multer from "multer" //? sluzy do obslugi formData (zamiast app.use(express.json()))
 const storage = multer.diskStorage({
     destination(req, file, callback) {
-        callback(null, './uploads')
+        callback(null, './server/uploads')
     },
     filename(req, file, callback) {
         console.log(file);
