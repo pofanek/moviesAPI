@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import { promises as fs } from "fs";
 import mysql, { RowDataPacket } from "mysql2/promise"; //? /promise zeby asynchronicznosc zapytan dzialala
 dotenv.config() //? Loads .env file contents into process.env by default.
 //? connect – jedno połączenie, zapytania jedno po drugim
@@ -19,7 +20,7 @@ await pool.query(`
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(30) NOT NULL UNIQUE,
         description VARCHAR(100) NOT NULL,
-        imagePath VARCHAR(20) NOT NULL
+        imagePath VARCHAR(255) NOT NULL
         );
         `)
         console.log("Database & Table initialized")
@@ -37,6 +38,7 @@ async function addMovie(movieName: string, movieDescription: string, movieImageP
     } catch (error: any) {
         if(error.code == "ER_DUP_ENTRY") {
             console.log('Ten film już istnieje, nic nie zostało dodane.')
+            await fs.rm(movieImagePath)
             return
         }
         throw error
@@ -56,8 +58,4 @@ async function viewMovie(name: string) {
         console.log(error)
     }
 }
-(async () => {
-    await initialize()
-    await addMovie("film", "fajny film", './uploads')
-    await viewMovie('film')
-})();
+export { initialize, addMovie, viewMovie };

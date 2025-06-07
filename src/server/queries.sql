@@ -11,4 +11,7 @@ DROP TABLE movies;
 INSERT INTO movies (name, description, imagePath)
 VALUES ('test', 'test2', 'test3');
 --------------
-DELETE FROM movies
+DELETE FROM movies;
+--------------
+ALTER TABLE movies
+MODIFY COLUMN imagePath VARCHAR(255);
