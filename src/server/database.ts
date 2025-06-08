@@ -1,16 +1,25 @@
 import dotenv from "dotenv";
 import { promises as fs } from "fs";
 import mysql, { RowDataPacket } from "mysql2/promise"; //? /promise zeby asynchronicznosc zapytan dzialala
+
 dotenv.config() //? Loads .env file contents into process.env by default.
+
+const { DB_HOST, DB_USER, DB_PASS, DB_DATABASE } = process.env;
+if(!DB_HOST || !DB_USER || !DB_PASS) {
+    throw Error("'.env' file is not filled out.")
+}
+
 //? connect – jedno połączenie, zapytania jedno po drugim
 //? pool – wiele połączeń, zapytania równocześnie
 const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
+    host: DB_HOST,
+    user: DB_USER,
+    password: DB_PASS,
     multipleStatements: true //? pare zapytan w jednym query
 })
-const db = process.env.DB_DATABASE
+
+const db = DB_DATABASE
+
 async function initialize() {
     try {
 await pool.query(`
@@ -28,6 +37,7 @@ await pool.query(`
         throw err
     }
 }
+
 async function addMovie(movieName: string, movieDescription: string, movieImagePath: string) {
     try {
         await pool.query(`
@@ -37,13 +47,14 @@ async function addMovie(movieName: string, movieDescription: string, movieImageP
         console.log(`values: ${movieName}, ${movieDescription}, ${movieImagePath} got added to table.`)
     } catch (error: any) {
         if(error.code == "ER_DUP_ENTRY") {
-            console.log('Ten film już istnieje, nic nie zostało dodane.')
-            await fs.rm(movieImagePath)
+            console.warn('Ten film już istnieje, nic nie zostało dodane.')
+            await fs.rm(movieImagePath) //TODO do zmiany na unlink!
             return
         }
         throw error
     }
 }
+
 async function viewMovie(name: string): Promise<Object | mysql.RowDataPacket>{ //? promise bo to asynchroniczna
     try {
         const [rows] = await pool.query(`SELECT * FROM movies WHERE name = ?`, [name]) //? [rows] to rows[0], [name] podstawia sie pod ? pokolei jakby bylo wiecej ?
@@ -60,4 +71,5 @@ async function viewMovie(name: string): Promise<Object | mysql.RowDataPacket>{ /
         return {}
     }
 }
+
 export { initialize, addMovie, viewMovie };

@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
     "server": "nodemon ./src/server/server.ts",
     "database": "nodemon ./src/server/database.ts",
-    "watch": "tsc --watch",
     "tail": "npx tailwindcss -i ./src/client/input.css -o ./src/client/output.css --watch"
   },
   "keywords": [],
