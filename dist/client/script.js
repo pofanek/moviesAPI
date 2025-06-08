@@ -2,6 +2,18 @@
 const form = document.querySelector('#dodawanie');
 // const button = document.querySelector('button#siema') as HTMLButtonElement // ? TO TUTAJ USTALA ZE TO JEST HTMLBUTTONELEMENT A NIE TAK JAK LINIJKA WYZEJ HTMLBUTTONELEMENT | NULL WIEC GORSZE
 //? button?.przykladowaMetoda() JEZELI BUTTON ISTNIEJE (nie jest NULL), WYWOŁA METODE.
+function showMovieInfo(name, description, imagePath) {
+    var _a, _b;
+    const nameElement = document.querySelector('#name');
+    const imageElement = document.querySelector('#obrazek');
+    const descriptionElement = document.querySelector('#description');
+    nameElement.textContent = name.toUpperCase();
+    imageElement.src = imagePath;
+    const fileName = (_b = (_a = imagePath.split(/[/\\]/).pop()) === null || _a === void 0 ? void 0 : _a.split('.')[0]) !== null && _b !== void 0 ? _b : '';
+    console.log("nazwa PLIKU: " + fileName);
+    imageElement.alt = fileName;
+    descriptionElement.textContent = description;
+}
 form === null || form === void 0 ? void 0 : form.addEventListener('submit', (e) => {
     var _a, _b;
     e.preventDefault();
@@ -42,6 +54,8 @@ formSearch === null || formSearch === void 0 ? void 0 : formSearch.addEventListe
         return res.text();
     }).then(data => {
         console.log(data);
+        const obj = JSON.parse(data);
+        showMovieInfo(obj.name, obj.description, obj.imagePath);
     });
     console.log("fetch finished");
 });

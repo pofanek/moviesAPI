@@ -23,31 +23,36 @@ const storage = multer.diskStorage({
         callback(null, file.originalname)
     },
 })
+type Movie = {
+    id: number
+    name: string
+    description: string
+    imagePath: string
+}
 const upload = multer({storage: storage})
 const app = express()
 const PORT = 4747
 app.use(cors())
+app.use('/uploads', express.static(__dirname + '/uploads'))
 app.post("/movies/add",upload.single('image') , (req, res) => { //? image to name mojego inputa z type="file"
     const body: Body = req.body
     const bodySTr: string = JSON.stringify(body)
-    const bodyObj: any = JSON.parse(bodySTr)
+    const bodyObj: {movieName: string, description: string} = JSON.parse(bodySTr)
     const file = req.file
     console.log(JSON.stringify(body));
     console.log("nazwa pliku: " + file?.filename);
-    console.log("sciezka pliku: " + file?.path);
         (async () => {
-            await addMovie(bodyObj.movieName, bodyObj.description, file!.path);
+            await addMovie(bodyObj.movieName, bodyObj.description, 'http://localhost:4747/uploads/' + file!.originalname);
             res.send("dane zostały przesłane")
         })();
 })
 app.get("/movies/search", (req, res) => {
     const query = req.query
     const querySTr: string = JSON.stringify(query)
-    const queryObj: any = JSON.parse(querySTr)
+    const queryObj: {query: string} = JSON.parse(querySTr)
     console.log('server received: ' + queryObj.query);
-    var result;
     (async () => { //? W ASYNC WYWOLUJE SIE ASYNCHRONICZNIE CZYLI POKOLEI
-        result = await viewMovie(queryObj.query);
+        const result: Movie | {} = await viewMovie(queryObj.query);
         console.log(result)
         res.send(result)
     })();

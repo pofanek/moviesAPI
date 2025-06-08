@@ -1,6 +1,22 @@
 const form = document.querySelector<HTMLFormElement>('#dodawanie')
 // const button = document.querySelector('button#siema') as HTMLButtonElement // ? TO TUTAJ USTALA ZE TO JEST HTMLBUTTONELEMENT A NIE TAK JAK LINIJKA WYZEJ HTMLBUTTONELEMENT | NULL WIEC GORSZE
 //? button?.przykladowaMetoda() JEZELI BUTTON ISTNIEJE (nie jest NULL), WYWOŁA METODE.
+function showMovieInfo(name: string, description: string, imagePath: string) {
+    const nameElement = document.querySelector<HTMLParagraphElement>('#name')
+    const imageElement = document.querySelector<HTMLImageElement>('#obrazek')
+    const descriptionElement = document.querySelector<HTMLParagraphElement>('#description')
+    nameElement!.textContent = name.toUpperCase()
+    imageElement!.src = imagePath
+    const fileName = imagePath.split(/[/\\]/).pop()?.split('.')[0] ?? ''
+    console.log("nazwa PLIKU: " + fileName)
+    imageElement!.alt = fileName
+    descriptionElement!.textContent = description
+}
+type MovieData = {
+    name: string
+    description: string
+    imagePath: string
+}
 form?.addEventListener('submit', (e) => {
     e.preventDefault()
     if(!document.querySelector<HTMLInputElement>("#uploadImage")?.files?.length) {
@@ -41,6 +57,8 @@ formSearch?.addEventListener('submit', (e) => {
         return res.text()
     }).then(data => {
         console.log(data)
+        const obj: MovieData = JSON.parse(data)
+        showMovieInfo(obj.name, obj.description, obj.imagePath)
     })
     console.log("fetch finished")
 })

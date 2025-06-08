@@ -42,6 +42,7 @@ const upload = (0, multer_1.default)({ storage: storage });
 const app = (0, express_1.default)();
 const PORT = 4747;
 app.use((0, cors_1.default)());
+app.use('/uploads', express_1.default.static(__dirname + '/uploads'));
 app.post("/movies/add", upload.single('image'), (req, res) => {
     const body = req.body;
     const bodySTr = JSON.stringify(body);
@@ -49,9 +50,8 @@ app.post("/movies/add", upload.single('image'), (req, res) => {
     const file = req.file;
     console.log(JSON.stringify(body));
     console.log("nazwa pliku: " + (file === null || file === void 0 ? void 0 : file.filename));
-    console.log("sciezka pliku: " + (file === null || file === void 0 ? void 0 : file.path));
     (() => __awaiter(void 0, void 0, void 0, function* () {
-        yield (0, database_1.addMovie)(bodyObj.movieName, bodyObj.description, file.path);
+        yield (0, database_1.addMovie)(bodyObj.movieName, bodyObj.description, 'http://localhost:4747/uploads/' + file.originalname);
         res.send("dane zostały przesłane");
     }))();
 });
@@ -60,9 +60,8 @@ app.get("/movies/search", (req, res) => {
     const querySTr = JSON.stringify(query);
     const queryObj = JSON.parse(querySTr);
     console.log('server received: ' + queryObj.query);
-    var result;
     (() => __awaiter(void 0, void 0, void 0, function* () {
-        result = yield (0, database_1.viewMovie)(queryObj.query);
+        const result = yield (0, database_1.viewMovie)(queryObj.query);
         console.log(result);
         res.send(result);
     }))();
