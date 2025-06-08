@@ -16,6 +16,7 @@ exports.initialize = initialize;
 exports.addMovie = addMovie;
 exports.viewMovie = viewMovie;
 const dotenv_1 = __importDefault(require("dotenv"));
+const fs_1 = require("fs");
 const promise_1 = __importDefault(require("mysql2/promise")); //? /promise zeby asynchronicznosc zapytan dzialala
 dotenv_1.default.config(); //? Loads .env file contents into process.env by default.
 //? connect – jedno połączenie, zapytania jedno po drugim
@@ -37,7 +38,7 @@ function initialize() {
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(30) NOT NULL UNIQUE,
         description VARCHAR(100) NOT NULL,
-        imagePath VARCHAR(20) NOT NULL
+        imagePath VARCHAR(255) NOT NULL
         );
         `);
             console.log("Database & Table initialized");
@@ -53,11 +54,12 @@ function addMovie(movieName, movieDescription, movieImagePath) {
             yield pool.query(`
         INSERT INTO movies (name, description, imagePath)
         VALUES (?, ?, ?);`, [movieName, movieDescription, movieImagePath]);
-            console.log(`values ${movieName}, ${movieDescription}, ${movieImagePath} got added to table.`);
+            console.log(`values: ${movieName}, ${movieDescription}, ${movieImagePath} got added to table.`);
         }
         catch (error) {
             if (error.code == "ER_DUP_ENTRY") {
                 console.log('Ten film już istnieje, nic nie zostało dodane.');
+                yield fs_1.promises.rm(movieImagePath);
                 return;
             }
             throw error;
@@ -67,17 +69,19 @@ function addMovie(movieName, movieDescription, movieImagePath) {
 function viewMovie(name) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const [rows] = yield pool.query(`SELECT * FROM movies WHERE name = ?`, [name]); //? [rows] to rows[1] [name] podstawia sie pod ? pokolei jakby bylo wiecej ?
+            const [rows] = yield pool.query(`SELECT * FROM movies WHERE name = ?`, [name]); //? [rows] to rows[0], [name] podstawia sie pod ? pokolei jakby bylo wiecej ?
             const result = rows; //? bez tego length nie dziala xd
             if (result.length === 0) {
                 console.log("nie znalazlo filmu.");
-                return;
+                return {};
             }
             console.log(`wyswietlam film o id: ${result[0].id}`);
             console.log(result[0]);
+            return result[0];
         }
         catch (error) {
             console.log(error);
+            return {};
         }
     });
 }

@@ -15,10 +15,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const multer_1 = __importDefault(require("multer")); //? sluzy do obslugi formData (zamiast app.use(express.json()))
+const fs_1 = require("fs");
 const database_1 = require("./database");
+//TODO REMOVING MOVIES.
+//TODO ADD LIST OF ALL MOVIES IN ANOTHER HTML FILE
+//TODO a co jak ktos doda obraz z taka nazwa jaka juz jest, ale to bedzie inny obraz?
+function clearFolder(folderPath) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const files = yield fs_1.promises.readdir(folderPath);
+        console.log(files);
+        files.forEach(element => {
+            fs_1.promises.rm(folderPath + "/" + element);
+        });
+    });
+}
 const storage = multer_1.default.diskStorage({
     destination(req, file, callback) {
-        callback(null, './server/uploads');
+        callback(null, __dirname + '/uploads');
     },
     filename(req, file, callback) {
         console.log(file);
@@ -31,10 +44,28 @@ const PORT = 4747;
 app.use((0, cors_1.default)());
 app.post("/movies/add", upload.single('image'), (req, res) => {
     const body = req.body;
+    const bodySTr = JSON.stringify(body);
+    const bodyObj = JSON.parse(bodySTr);
     const file = req.file;
     console.log(JSON.stringify(body));
     console.log("nazwa pliku: " + (file === null || file === void 0 ? void 0 : file.filename));
-    res.send("dane zostały przesłane");
+    console.log("sciezka pliku: " + (file === null || file === void 0 ? void 0 : file.path));
+    (() => __awaiter(void 0, void 0, void 0, function* () {
+        yield (0, database_1.addMovie)(bodyObj.movieName, bodyObj.description, file.path);
+        res.send("dane zostały przesłane");
+    }))();
+});
+app.get("/movies/search", (req, res) => {
+    const query = req.query;
+    const querySTr = JSON.stringify(query);
+    const queryObj = JSON.parse(querySTr);
+    console.log('server received: ' + queryObj.query);
+    var result;
+    (() => __awaiter(void 0, void 0, void 0, function* () {
+        result = yield (0, database_1.viewMovie)(queryObj.query);
+        console.log(result);
+        res.send(result);
+    }))();
 });
 app.listen(PORT, () => {
     console.log("server is running on PORT:" + PORT);

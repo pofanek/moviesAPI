@@ -34,7 +34,7 @@ async function addMovie(movieName: string, movieDescription: string, movieImageP
         INSERT INTO movies (name, description, imagePath)
         VALUES (?, ?, ?);`,
       [movieName, movieDescription, movieImagePath])
-        console.log(`values ${movieName}, ${movieDescription}, ${movieImagePath} got added to table.`)
+        console.log(`values: ${movieName}, ${movieDescription}, ${movieImagePath} got added to table.`)
     } catch (error: any) {
         if(error.code == "ER_DUP_ENTRY") {
             console.log('Ten film już istnieje, nic nie zostało dodane.')
@@ -44,18 +44,20 @@ async function addMovie(movieName: string, movieDescription: string, movieImageP
         throw error
     }
 }
-async function viewMovie(name: string) {
+async function viewMovie(name: string): Promise<Object | mysql.RowDataPacket>{ //? promise bo to asynchroniczna
     try {
-        const [rows] = await pool.query(`SELECT * FROM movies WHERE name = ?`, [name]) //? [rows] to rows[1] [name] podstawia sie pod ? pokolei jakby bylo wiecej ?
+        const [rows] = await pool.query(`SELECT * FROM movies WHERE name = ?`, [name]) //? [rows] to rows[0], [name] podstawia sie pod ? pokolei jakby bylo wiecej ?
         const result = rows as RowDataPacket[] //? bez tego length nie dziala xd
         if (result.length === 0) {
             console.log("nie znalazlo filmu.")
-            return
+            return {};
         }
         console.log(`wyswietlam film o id: ${result[0].id}`)
         console.log(result[0]);
+        return result[0]
     } catch (error: any) {
         console.log(error)
+        return {}
     }
 }
 export { initialize, addMovie, viewMovie };

@@ -33,3 +33,15 @@ form === null || form === void 0 ? void 0 : form.addEventListener('submit', (e) 
     })
         .catch((err) => console.log(err));
 });
+const formSearch = document.querySelector('#wyszukiwanie');
+const searchInput = document.querySelector('input[name=search]');
+formSearch === null || formSearch === void 0 ? void 0 : formSearch.addEventListener('submit', (e) => {
+    e.preventDefault();
+    fetch(`http://localhost:4747/movies/search?query=${encodeURIComponent(searchInput.value)}`) //? encodeURIComponent - formatuje na jeden ciag znakow zamieniajac spacje itd np. // "cze%C5%9B%C4%87%20%C5%9Bwiat%3F"
+        .then(res => {
+        return res.text();
+    }).then(data => {
+        console.log(data);
+    });
+    console.log("fetch finished");
+});
