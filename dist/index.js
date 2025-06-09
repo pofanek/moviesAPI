@@ -10,7 +10,6 @@ function showMovieInfo(name, description, imagePath) {
     nameElement.textContent = name.toUpperCase();
     imageElement.src = imagePath;
     const fileName = (_b = (_a = imagePath.split(/[/\\]/).pop()) === null || _a === void 0 ? void 0 : _a.split('.')[0]) !== null && _b !== void 0 ? _b : '';
-    console.log("nazwa PLIKU: " + fileName);
     imageElement.alt = fileName;
     descriptionElement.textContent = description;
 }
@@ -35,7 +34,7 @@ form === null || form === void 0 ? void 0 : form.addEventListener('submit', (e) 
         //? szyk ze najpierw definiuje sie repsonse a potem wyswietla dane jest odgórny, jakbym usunal czesc z response to by w data pojawil sie response
         .then((response) => {
         console.log("repsonse status: " + response.status);
-        return response.text();
+        return response.json();
     })
         .then((data) => {
         console.log(data);
@@ -51,11 +50,15 @@ formSearch === null || formSearch === void 0 ? void 0 : formSearch.addEventListe
     e.preventDefault();
     fetch(`http://localhost:4747/movies/search?query=${encodeURIComponent(searchInput.value)}`) //? encodeURIComponent - formatuje na jeden ciag znakow zamieniajac spacje itd np. // "cze%C5%9B%C4%87%20%C5%9Bwiat%3F"
         .then(res => {
-        return res.text();
+        return res.json();
     }).then(data => {
-        console.log(data);
-        const obj = JSON.parse(data);
-        showMovieInfo(obj.name, obj.description, obj.imagePath);
-    });
-    console.log("fetch finished");
+        const result = data.result;
+        if (!result) {
+            console.error("movie not found.");
+            console.warn(data);
+            return;
+        }
+        console.log(result);
+        showMovieInfo(result.name, result.description, result.imagePath);
+    }).finally(() => console.log("fetch finished"));
 });

@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { promises as fs } from "fs";
 import mysql, { RowDataPacket } from "mysql2/promise"; //? /promise zeby asynchronicznosc zapytan dzialala
-
+import { MovieDb } from '../types/movies'
 dotenv.config() //? Loads .env file contents into process.env by default.
 
 const { DB_HOST, DB_USER, DB_PASS, DB_DATABASE } = process.env;
@@ -55,20 +55,20 @@ async function addMovie(movieName: string, movieDescription: string, movieImageP
     }
 }
 
-async function viewMovie(name: string): Promise<Object | mysql.RowDataPacket>{ //? promise bo to asynchroniczna
+async function viewMovie(name: string): Promise<undefined | MovieDb>{ //? promise bo to asynchroniczna
     try {
         const [rows] = await pool.query(`SELECT * FROM movies WHERE name = ?`, [name]) //? [rows] to rows[0], [name] podstawia sie pod ? pokolei jakby bylo wiecej ?
         const result = rows as RowDataPacket[] //? bez tego length nie dziala xd
         if (result.length === 0) {
             console.log("nie znalazlo filmu.")
-            return {};
+            return;
         }
         console.log(`wyswietlam film o id: ${result[0].id}`)
         console.log(result[0]);
-        return result[0]
+        return result[0] as MovieDb
     } catch (error: any) {
         console.log(error)
-        return {}
+        return
     }
 }
 

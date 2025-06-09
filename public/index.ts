@@ -8,7 +8,6 @@ function showMovieInfo(name: string, description: string, imagePath: string) {
     nameElement!.textContent = name.toUpperCase()
     imageElement!.src = imagePath
     const fileName = imagePath.split(/[/\\]/).pop()?.split('.')[0] ?? ''
-    console.log("nazwa PLIKU: " + fileName)
     imageElement!.alt = fileName
     descriptionElement!.textContent = description
 }
@@ -35,11 +34,11 @@ form?.addEventListener('submit', (e) => {
         body: formData
     })
     //? szyk ze najpierw definiuje sie repsonse a potem wyswietla dane jest odgórny, jakbym usunal czesc z response to by w data pojawil sie response
-    .then((response: Response) => { //? tutaj response definiuje w jakiej postaci ma być czyli jakby zwracalo json to by bylo .json() w returnie
+    .then((response: Response) => { //? tutaj response definiuje w jakiej postaci ma być czyli jakby zwracalo text to by bylo .text() w returnie
         console.log("repsonse status: " + response.status);
-        return response.text()
+        return response.json()
     })
-    .then((data: string) => { //? przyslane z serwera
+    .then((data) => { //? przyslane z serwera
         console.log(data)
     })
     .then(() => {
@@ -54,11 +53,15 @@ formSearch?.addEventListener('submit', (e) => {
     e.preventDefault()
     fetch(`http://localhost:4747/movies/search?query=${encodeURIComponent(searchInput.value)}`) //? encodeURIComponent - formatuje na jeden ciag znakow zamieniajac spacje itd np. // "cze%C5%9B%C4%87%20%C5%9Bwiat%3F"
     .then(res => {
-        return res.text()
+        return res.json()
     }).then(data => {
-        console.log(data)
-        const obj: MovieData = JSON.parse(data)
-        showMovieInfo(obj.name, obj.description, obj.imagePath)
-    })
-    console.log("fetch finished")
+        const result = data.result;
+        if(!result){
+            console.error("movie not found.")
+            console.warn(data)
+            return
+        }
+        console.log(result)
+        showMovieInfo(result.name, result.description, result.imagePath)
+    }).finally(()=>console.log("fetch finished"))
 })
