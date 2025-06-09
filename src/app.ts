@@ -2,10 +2,9 @@ import express, { NextFunction, Request, Response } from 'express'
 import cors from "cors"
 import path from 'path';
 import helmet from 'helmet';
+import rateLimit from "express-rate-limit";
 import { initialize } from "./database/db";
 import moviesRouter from "./routes/movies"
-
-//TODO ADD LIST OF ALL MOVIES IN ANOTHER HTML FILE
 
 const app = express()
 const PORT = 4747;
@@ -25,9 +24,19 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
       success: false,
       message: err.message || "Błąd serwera"
     })
-}
-app.use(errorHandler)
-app.listen(PORT, async () => {
-    console.log("server is running on PORT:" + PORT);
-    await initialize();
+  }
+const apiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 50,
+  message: "Too many requests. please wait 1 minute."
 })
+app.use('/movies', apiLimiter)
+app.use(errorHandler);
+initialize()
+  .then(() => {
+    app.listen(PORT, () => console.log(`Serwer na porcie ${PORT}`));
+  })
+  .catch(err => {
+    console.error("Database initialization error.", err);
+    process.exit(1);
+  });

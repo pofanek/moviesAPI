@@ -67,7 +67,7 @@ async function viewMovie(name: string): Promise<undefined | MovieDb>{ //? promis
         console.log(result[0]);
         return result[0] as MovieDb
     } catch (error: any) {
-        console.log(error)
+        throw error
         return
     }
 }
