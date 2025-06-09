@@ -18,12 +18,13 @@
                     <h1 class="font-semibold">NAME</h1>
                     <input name="movieName" autocomplete="off" required maxlength="30" type="text" class="bg-amber-100 border-2 focus:border-sky-400 focus:outline-none rounded-md transition duration-150 w-48">
                     <h1 class="font-semibold">DESCRIPTION</h1>
-                    <textarea name="description" autocomplete="off" required maxlength="100" type="text" class="bg-amber-100 border-2 focus:border-sky-400 focus:outline-none rounded-md transition duration-150 w-[60%] h-32"></textarea>
+                    <textarea name="movieDescription" autocomplete="off" required maxlength="100" type="text" class="bg-amber-100 border-2 focus:border-sky-400 focus:outline-none rounded-md transition duration-150 w-[60%] h-32"></textarea>
                     <h1 class="font-semibold">IMAGE</h1>
                     <label class="bg-amber-100 border-2 rounded-md transition duration-150 w-48 text-center cursor-pointer active:border-sky-400">
                         Choose file
                         <input name="image" type="file" accept="image/*" class="hidden" id="uploadImage">
                     </label>
+                    <img src="" alt="" class="max-h-28 max-w-28" id="preview">
                     <button type="submit"  class="bg-amber-100 border-2 active:border-sky-400 focus:outline-none rounded-md transition duration-150 w-36 mt-4">Submit</button>
                 </div>
             </form>

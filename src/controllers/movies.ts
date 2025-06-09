@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { MovieDb } from '../types/movies'
 import { addMovie, viewMovie } from "../database/db";
-import { monitorEventLoopDelay } from "perf_hooks";
 
 export const addMovieHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -16,7 +15,7 @@ export const addMovieHandler = async (req: Request, res: Response, next: NextFun
             throw Error("movie name or description not found.")
         }
         console.log("nazwa pliku: " + file?.filename);
-        await addMovie(movieName, movieDescription, 'http://localhost:4747/uploads/' + file!.originalname);
+        await addMovie(movieName, movieDescription, 'http://localhost:4747/uploads/' + file.filename);
         res.status(201).json({success: true, message: "dane zostały przesłane"})
     } catch (error) {
         next(error) //? bez next po app.use() w ktorym handler sie znajduje nic by sie nie wykonalo. (tak samo to dziala jakby nie bylo reponse w try bloku)

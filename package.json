@@ -22,7 +22,8 @@
     "helmet": "^8.1.0",
     "multer": "^2.0.1",
     "mysql2": "^3.14.1",
-    "tailwindcss": "^4.1.8"
+    "tailwindcss": "^4.1.8",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.18",

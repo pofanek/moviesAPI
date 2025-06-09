@@ -16,6 +16,13 @@ type MovieData = {
     description: string
     imagePath: string
 }
+const fileInput = document.querySelector<HTMLInputElement>("#uploadImage")
+fileInput?.addEventListener('change', () => {
+    if (!fileInput.files){return}
+    const file = fileInput.files[0]
+    const url = URL.createObjectURL(file);
+    document.querySelector<HTMLImageElement>('#preview')!.src = url;
+})
 form?.addEventListener('submit', (e) => {
     e.preventDefault()
     if(!document.querySelector<HTMLInputElement>("#uploadImage")?.files?.length) {
@@ -24,7 +31,6 @@ form?.addEventListener('submit', (e) => {
     }
     //? uzywam formData bo korzystam z plikow.
     const formData = new FormData(form)
-    console.log(formData);
     formData.forEach((value, key) => {
         console.log(key, value)
     })
@@ -43,6 +49,9 @@ form?.addEventListener('submit', (e) => {
     })
     .then(() => {
         form.reset()
+        const img = document.querySelector<HTMLImageElement>('#preview')
+        if (!img) {return}
+        img.src = ""
     })
     .catch((err: Error) => console.log(err))
 })

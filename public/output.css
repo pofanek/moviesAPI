@@ -15,7 +15,6 @@
     --color-amber-100: oklch(96.2% 0.059 95.617);
     --color-amber-200: oklch(92.4% 0.12 95.746);
     --color-emerald-400: oklch(76.5% 0.177 163.223);
-    --color-emerald-500: oklch(69.6% 0.17 162.48);
     --color-sky-400: oklch(74.6% 0.16 232.661);
     --spacing: 0.25rem;
     --text-xl: 1.25rem;
@@ -176,8 +175,35 @@
   }
 }
 @layer utilities {
+  .absolute {
+    position: absolute;
+  }
   .relative {
     position: relative;
+  }
+  .top-0 {
+    top: calc(var(--spacing) * 0);
+  }
+  .top-4 {
+    top: calc(var(--spacing) * 4);
+  }
+  .top-\[-10\%\] {
+    top: -10%;
+  }
+  .right-4 {
+    right: calc(var(--spacing) * 4);
+  }
+  .right-10 {
+    right: calc(var(--spacing) * 10);
+  }
+  .right-\[100\%\] {
+    right: 100%;
+  }
+  .left-\[90\%\] {
+    left: 90%;
+  }
+  .left-\[100\%\] {
+    left: 100%;
   }
   .m-auto {
     margin: auto;
@@ -288,6 +314,9 @@
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 2px;
   }
+  .bg-amber-50 {
+    background-color: var(--color-amber-50);
+  }
   .bg-amber-100 {
     background-color: var(--color-amber-100);
   }
@@ -296,9 +325,6 @@
   }
   .bg-emerald-400 {
     background-color: var(--color-emerald-400);
-  }
-  .bg-red-100 {
-    background-color: var(--color-red-100);
   }
   .p-2 {
     padding: calc(var(--spacing) * 2);

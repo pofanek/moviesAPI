@@ -13,6 +13,15 @@ function showMovieInfo(name, description, imagePath) {
     imageElement.alt = fileName;
     descriptionElement.textContent = description;
 }
+const fileInput = document.querySelector("#uploadImage");
+fileInput === null || fileInput === void 0 ? void 0 : fileInput.addEventListener('change', () => {
+    if (!fileInput.files) {
+        return;
+    }
+    const file = fileInput.files[0];
+    const url = URL.createObjectURL(file);
+    document.querySelector('#preview').src = url;
+});
 form === null || form === void 0 ? void 0 : form.addEventListener('submit', (e) => {
     var _a, _b;
     e.preventDefault();
@@ -22,7 +31,6 @@ form === null || form === void 0 ? void 0 : form.addEventListener('submit', (e) 
     }
     //? uzywam formData bo korzystam z plikow.
     const formData = new FormData(form);
-    console.log(formData);
     formData.forEach((value, key) => {
         console.log(key, value);
     });
@@ -41,6 +49,11 @@ form === null || form === void 0 ? void 0 : form.addEventListener('submit', (e) 
     })
         .then(() => {
         form.reset();
+        const img = document.querySelector('#preview');
+        if (!img) {
+            return;
+        }
+        img.src = "";
     })
         .catch((err) => console.log(err));
 });
